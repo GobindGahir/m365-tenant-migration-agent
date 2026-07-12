@@ -67,11 +67,15 @@ To execute supported target actions:
 
 | Workload | MVP Behavior |
 | --- | --- |
-| Users | Generates target user provisioning plan and license assignment plan. |
+| Users | Reads scoped source users from a migration security group and generates target user provisioning and license assignment plans. |
+| Shared Mailboxes | Reads scoped source shared mailboxes from a separate migration security group and supports target shared mailbox creation. |
+| Shared Mailbox Permissions | Imports permission mappings from CSV and supports target FullAccess and SendAs assignment. |
 | Licenses | Maps source SKU part numbers to target SKU IDs from config. |
 | Microsoft 365 Groups | Generates group creation plan; supports safe creation when `-Execute` is used. |
-| Teams | Detects Teams-connected groups and generates team/channel provisioning actions. |
-| SharePoint | Generates site provisioning plan. |
+| Security Groups | Generates target security group actions from Teams and SharePoint CSV scope rows. |
+| Teams | Imports Teams scope from CSV and generates group/team/channel provisioning actions. |
+| SharePoint | Imports SharePoint scope from CSV and generates site provisioning plan. |
+| Distribution Lists | Imports DL scope from CSV and supports target distribution list creation through Exchange Online PowerShell. |
 | OneDrive | Generates pre-provisioning actions for licensed users. |
 
 ## Safety Controls
@@ -102,6 +106,10 @@ m365-tenant-migration-agent/
     Write-M365AgentAudit.ps1
   config/
     sample.agent-config.json
+    sample.teams-scope.csv
+    sample.sharepoint-scope.csv
+    sample.distribution-lists-scope.csv
+    sample.shared-mailbox-permissions.csv
   docs/
     permissions.md
     architecture.md
