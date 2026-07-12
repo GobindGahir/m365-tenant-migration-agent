@@ -22,10 +22,25 @@ Suggested delegated Microsoft Graph scopes:
 | Sites.ReadWrite.All | Future SharePoint provisioning workflows. |
 | Directory.ReadWrite.All | Directory write operations where required. |
 
+## Exchange Online
+
+Distribution list provisioning uses Exchange Online PowerShell.
+
+Suggested role:
+
+| Role | Purpose |
+| --- | --- |
+| Exchange Administrator | Create and manage distribution groups during migration provisioning. |
+
+Before using `-Execute` for DL creation, connect to the target tenant with:
+
+```powershell
+Connect-ExchangeOnline -UserPrincipalName admin@target.contoso.com
+```
+
 ## Security Notes
 
 - Do not commit tenant IDs if they are considered sensitive.
 - Do not commit app secrets, certificates, or access tokens.
 - Use least privilege app registrations in production.
 - Test with lab tenants before production.
-

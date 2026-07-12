@@ -5,7 +5,7 @@
 ```mermaid
 flowchart LR
     Config["Agent config"] --> Source["Source tenant user group discovery"]
-    Config --> Scope["Teams/SPO CSV scope"]
+    Config --> Scope["Teams/SPO/DL CSV scope"]
     Source --> Inventory["Scoped user inventory"]
     Scope --> Plan
     Inventory --> Plan["Migration plan engine"]

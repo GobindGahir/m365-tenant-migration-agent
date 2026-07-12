@@ -10,6 +10,7 @@ This project reads objects from a source tenant, builds a migration provisioning
 - Connects to target tenant with read/write Graph permissions
 - Discovers source users from a source migration security group
 - Imports Teams and SharePoint migration scope from CSV files
+- Imports distribution list migration scope from CSV files
 - Builds a target provisioning plan
 - Detects naming and mapping risks
 - Exports CSV, JSON, and HTML reports
@@ -122,6 +123,7 @@ The agent should not provision everything it discovers.
 | OneDrive | Derived from scoped users |
 | Teams | `config/sample.teams-scope.csv` |
 | SharePoint | `config/sample.sharepoint-scope.csv` |
+| Distribution lists | `config/sample.distribution-lists-scope.csv` |
 | Security groups | Created from Teams/SPO CSV rows when requested |
 
 Example user scope:
@@ -130,8 +132,11 @@ Example user scope:
 "Scope": {
   "UserMigrationGroupId": "source-security-group-object-id",
   "TeamsCsvPath": ".\\config\\sample.teams-scope.csv",
-  "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv"
+  "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv",
+  "DistributionListsCsvPath": ".\\config\\sample.distribution-lists-scope.csv"
 }
 ```
 
 For Teams and SharePoint, the CSV can request an associated target security group using `CreateSecurityGroup=true`.
+
+Distribution list creation uses Exchange Online PowerShell, so connect Exchange Online in the target tenant before running with `-Execute` when DL creation is enabled.

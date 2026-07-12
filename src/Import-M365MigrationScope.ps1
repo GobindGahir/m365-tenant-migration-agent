@@ -7,6 +7,7 @@ function Import-M365MigrationScope {
 
     $teams = @()
     $sharePointSites = @()
+    $distributionLists = @()
 
     if ($null -ne $Config.Scope -and -not [string]::IsNullOrWhiteSpace($Config.Scope.TeamsCsvPath)) {
         $teamsPath = Resolve-M365AgentPath -Path $Config.Scope.TeamsCsvPath
@@ -22,9 +23,17 @@ function Import-M365MigrationScope {
         }
     }
 
+    if ($null -ne $Config.Scope -and -not [string]::IsNullOrWhiteSpace($Config.Scope.DistributionListsCsvPath)) {
+        $distributionListsPath = Resolve-M365AgentPath -Path $Config.Scope.DistributionListsCsvPath
+        if (Test-Path -Path $distributionListsPath) {
+            $distributionLists = @(Import-Csv -Path $distributionListsPath | Where-Object { ConvertTo-Bool $_.Enabled })
+        }
+    }
+
     [pscustomobject]@{
         Teams = $teams
         SharePointSites = $sharePointSites
+        DistributionLists = $distributionLists
     }
 }
 

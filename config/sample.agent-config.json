@@ -18,12 +18,14 @@
   "Scope": {
     "UserMigrationGroupId": "source-migration-security-group-object-id",
     "TeamsCsvPath": ".\\config\\sample.teams-scope.csv",
-    "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv"
+    "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv",
+    "DistributionListsCsvPath": ".\\config\\sample.distribution-lists-scope.csv"
   },
   "Provisioning": {
     "CreateUsers": false,
     "CreateGroups": true,
     "CreateSecurityGroups": true,
+    "CreateDistributionLists": true,
     "CreateTeams": false,
     "CreateSharePointSites": false,
     "PreProvisionOneDrive": false,

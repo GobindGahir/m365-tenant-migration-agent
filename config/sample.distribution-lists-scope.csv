@@ -1,0 +1,4 @@
+SourceDisplayName,TargetDisplayName,TargetPrimarySmtpAddress,Alias,Action,Wave,Enabled,Owners,Members,RequireSenderAuthenticationEnabled
+HR Announcements,HR Announcements,hr-announcements@target.contoso.com,hr-announcements,Provision,Wave1,true,hr.manager@target.contoso.com,jane.doe@target.contoso.com;mark.smith@target.contoso.com,true
+Finance Updates,Finance Updates,finance-updates@target.contoso.com,finance-updates,Provision,Wave1,true,finance.owner@target.contoso.com,,true
+Legacy Notices,Legacy Notices,legacy-notices@target.contoso.com,legacy-notices,Skip,Wave1,false,,,

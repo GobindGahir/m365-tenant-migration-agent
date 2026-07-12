@@ -52,6 +52,47 @@ function Invoke-M365TargetProvisioning {
                 $message = 'Security group created in target tenant.'
             }
         }
+        elseif ($Execute -and $action.ExecuteSupported -eq $true -and $action.ActionType -eq 'CreateDistributionList' -and $Config.Provisioning.CreateDistributionLists -eq $true) {
+            if (-not (Get-Command New-DistributionGroup -ErrorAction SilentlyContinue)) {
+                $status = 'NotConnected'
+                $message = 'Exchange Online PowerShell is not connected or New-DistributionGroup is unavailable.'
+            }
+            else {
+                $existingDl = @(Get-DistributionGroup -Identity $action.PrimarySmtpAddress -ErrorAction SilentlyContinue)
+
+                if ($existingDl.Count -gt 0) {
+                    $status = 'Skipped'
+                    $message = 'Target distribution list already exists.'
+                }
+                else {
+                    $params = @{
+                        Name = $action.TargetName
+                        DisplayName = $action.TargetName
+                        Alias = $action.Alias
+                        PrimarySmtpAddress = $action.PrimarySmtpAddress
+                    }
+
+                    if (-not [string]::IsNullOrWhiteSpace($action.Owners)) {
+                        $params.ManagedBy = @($action.Owners -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+                    }
+
+                    New-DistributionGroup @params | Out-Null
+
+                    if (-not [string]::IsNullOrWhiteSpace($action.RequireSenderAuthenticationEnabled)) {
+                        Set-DistributionGroup -Identity $action.PrimarySmtpAddress -RequireSenderAuthenticationEnabled (ConvertTo-Bool $action.RequireSenderAuthenticationEnabled)
+                    }
+
+                    if (-not [string]::IsNullOrWhiteSpace($action.Members)) {
+                        foreach ($member in @($action.Members -split ';' | ForEach-Object { $_.Trim() } | Where-Object { $_ })) {
+                            Add-DistributionGroupMember -Identity $action.PrimarySmtpAddress -Member $member -ErrorAction Stop
+                        }
+                    }
+
+                    $status = 'Created'
+                    $message = 'Distribution list created in target tenant.'
+                }
+            }
+        }
         elseif ($Execute -and $action.ExecuteSupported -ne $true) {
             $status = 'NotSupported'
             $message = 'This action is intentionally plan-only in the MVP.'
@@ -91,4 +132,16 @@ function ConvertTo-MailNickname {
     }
 
     $nickname
+}
+
+function ConvertTo-Bool {
+    param(
+        [object] $Value
+    )
+
+    if ($Value -is [bool]) {
+        return $Value
+    }
+
+    @('true', 'yes', '1', 'y') -contains ([string] $Value).Trim().ToLowerInvariant()
 }

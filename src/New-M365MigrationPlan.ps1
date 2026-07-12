@@ -136,6 +136,68 @@ function New-M365MigrationPlan {
         }
     }
 
+    foreach ($distributionList in $Scope.DistributionLists) {
+        if ($distributionList.Action -eq 'Skip') {
+            continue
+        }
+
+        $targetName = $distributionList.TargetDisplayName
+        $targetSmtp = $distributionList.TargetPrimarySmtpAddress
+
+        $actions.Add([pscustomobject]@{
+            ActionId = [guid]::NewGuid().ToString()
+            Workload = 'Exchange Online'
+            ActionType = 'CreateDistributionList'
+            SourceObjectId = $null
+            SourceName = $distributionList.SourceDisplayName
+            TargetName = $targetName
+            TargetObjectType = 'DistributionList'
+            RiskLevel = 'Medium'
+            ExecuteSupported = $true
+            PrimarySmtpAddress = $targetSmtp
+            Alias = $distributionList.Alias
+            Owners = $distributionList.Owners
+            Members = $distributionList.Members
+            RequireSenderAuthenticationEnabled = $distributionList.RequireSenderAuthenticationEnabled
+            Wave = $distributionList.Wave
+            Recommendation = 'Create target distribution list and validate owners, members, and mail flow.'
+        })
+
+        if (-not [string]::IsNullOrWhiteSpace($distributionList.Owners)) {
+            $actions.Add([pscustomobject]@{
+                ActionId = [guid]::NewGuid().ToString()
+                Workload = 'Exchange Online'
+                ActionType = 'PlanDistributionListOwners'
+                SourceObjectId = $null
+                SourceName = $distributionList.SourceDisplayName
+                TargetName = $targetName
+                TargetObjectType = 'DistributionList'
+                RiskLevel = 'Low'
+                ExecuteSupported = $false
+                Owners = $distributionList.Owners
+                Wave = $distributionList.Wave
+                Recommendation = 'Validate target distribution list ownership after creation.'
+            })
+        }
+
+        if (-not [string]::IsNullOrWhiteSpace($distributionList.Members)) {
+            $actions.Add([pscustomobject]@{
+                ActionId = [guid]::NewGuid().ToString()
+                Workload = 'Exchange Online'
+                ActionType = 'PlanDistributionListMembers'
+                SourceObjectId = $null
+                SourceName = $distributionList.SourceDisplayName
+                TargetName = $targetName
+                TargetObjectType = 'DistributionList'
+                RiskLevel = 'Low'
+                ExecuteSupported = $false
+                Members = $distributionList.Members
+                Wave = $distributionList.Wave
+                Recommendation = 'Validate target distribution list membership after creation.'
+            })
+        }
+    }
+
     [pscustomobject]@{
         GeneratedAt = (Get-Date).ToString('s')
         SourceTenant = $Config.SourceTenant.TenantId
