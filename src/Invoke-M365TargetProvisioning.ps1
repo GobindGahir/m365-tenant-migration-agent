@@ -32,10 +32,24 @@ function Invoke-M365TargetProvisioning {
                 $message = 'Target group already exists.'
             }
             else {
-                $mailNickname = ConvertTo-MailNickname -DisplayName $action.TargetName
+                $mailNickname = if ([string]::IsNullOrWhiteSpace($action.MailNickname)) { ConvertTo-MailNickname -DisplayName $action.TargetName } else { $action.MailNickname }
                 New-MgGroup -DisplayName $action.TargetName -MailEnabled:$true -MailNickname $mailNickname -SecurityEnabled:$false -GroupTypes @('Unified') | Out-Null
                 $status = 'Created'
                 $message = 'Microsoft 365 group created in target tenant.'
+            }
+        }
+        elseif ($Execute -and $action.ExecuteSupported -eq $true -and $action.ActionType -eq 'CreateSecurityGroup' -and $Config.Provisioning.CreateSecurityGroups -eq $true) {
+            $existing = @(Get-MgGroup -Filter "displayName eq '$($action.TargetName.Replace("'", "''"))'" -ConsistencyLevel eventual -ErrorAction SilentlyContinue)
+
+            if ($existing.Count -gt 0) {
+                $status = 'Skipped'
+                $message = 'Target security group already exists.'
+            }
+            else {
+                $mailNickname = if ([string]::IsNullOrWhiteSpace($action.MailNickname)) { ConvertTo-MailNickname -DisplayName $action.TargetName } else { $action.MailNickname }
+                New-MgGroup -DisplayName $action.TargetName -MailEnabled:$false -MailNickname $mailNickname -SecurityEnabled:$true | Out-Null
+                $status = 'Created'
+                $message = 'Security group created in target tenant.'
             }
         }
         elseif ($Execute -and $action.ExecuteSupported -ne $true) {
@@ -78,4 +92,3 @@ function ConvertTo-MailNickname {
 
     $nickname
 }
-

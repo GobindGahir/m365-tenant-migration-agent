@@ -10,6 +10,7 @@
     FunctionsToExport = @(
         'Connect-M365TenantMigrationAgent',
         'Get-M365SourceInventory',
+        'Import-M365MigrationScope',
         'New-M365MigrationPlan',
         'Invoke-M365TargetProvisioning',
         'Export-M365MigrationAgentReport',
@@ -26,4 +27,3 @@
         }
     }
 }
-

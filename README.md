@@ -8,7 +8,8 @@ This project reads objects from a source tenant, builds a migration provisioning
 
 - Connects to source tenant with read-only Graph permissions
 - Connects to target tenant with read/write Graph permissions
-- Discovers source users, groups, Teams-connected groups, and SharePoint sites
+- Discovers source users from a source migration security group
+- Imports Teams and SharePoint migration scope from CSV files
 - Builds a target provisioning plan
 - Detects naming and mapping risks
 - Exports CSV, JSON, and HTML reports
@@ -92,6 +93,7 @@ m365-tenant-migration-agent/
   src/
     Connect-M365TenantMigrationAgent.ps1
     Get-M365SourceInventory.ps1
+    Import-M365MigrationScope.ps1
     New-M365MigrationPlan.ps1
     Invoke-M365TargetProvisioning.ps1
     Export-M365MigrationAgentReport.ps1
@@ -110,3 +112,26 @@ m365-tenant-migration-agent/
 
 Tenant migration automation is high-impact. Test in lab tenants before using this project with production tenants.
 
+## Scoping Model
+
+The agent should not provision everything it discovers.
+
+| Workload | Scope Source |
+| --- | --- |
+| Users | Source tenant migration security group |
+| OneDrive | Derived from scoped users |
+| Teams | `config/sample.teams-scope.csv` |
+| SharePoint | `config/sample.sharepoint-scope.csv` |
+| Security groups | Created from Teams/SPO CSV rows when requested |
+
+Example user scope:
+
+```json
+"Scope": {
+  "UserMigrationGroupId": "source-security-group-object-id",
+  "TeamsCsvPath": ".\\config\\sample.teams-scope.csv",
+  "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv"
+}
+```
+
+For Teams and SharePoint, the CSV can request an associated target security group using `CreateSecurityGroup=true`.

@@ -22,8 +22,9 @@ $config = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
 
 Connect-M365TenantMigrationAgent -TenantId $config.SourceTenant.TenantId -Mode Source
 $inventory = Get-M365SourceInventory -Config $config
+$scope = Import-M365MigrationScope -Config $config
 
-$plan = New-M365MigrationPlan -Inventory $inventory -Config $config
+$plan = New-M365MigrationPlan -Inventory $inventory -Config $config -Scope $scope
 
 Connect-M365TenantMigrationAgent -TenantId $config.TargetTenant.TenantId -Mode Target
 $results = Invoke-M365TargetProvisioning -Plan $plan -Config $config -OutputPath $OutputPath -Execute:$Execute
@@ -36,4 +37,3 @@ Write-Host "Source sites discovered: $($inventory.Sites.Count)" -ForegroundColor
 Write-Host "Plan actions: $($plan.Actions.Count)" -ForegroundColor Green
 Write-Host "Mode: $(if ($Execute) { 'Execute' } else { 'DryRun' })" -ForegroundColor Green
 Write-Host "Reports saved to: $OutputPath" -ForegroundColor Green
-

@@ -1,0 +1,4 @@
+SourceSiteUrl,TargetSiteUrl,Template,Action,Wave,Enabled,CreateSecurityGroup,TargetSecurityGroupName
+https://source.sharepoint.com/sites/hr,https://target.sharepoint.com/sites/hr,TeamSite,Provision,Wave1,true,true,SG-MIG-SPO-HR
+https://source.sharepoint.com/sites/finance,https://target.sharepoint.com/sites/finance,TeamSite,Provision,Wave1,true,true,SG-MIG-SPO-Finance
+https://source.sharepoint.com/sites/legacy,https://target.sharepoint.com/sites/legacy,TeamSite,Skip,Wave1,false,false,

@@ -10,7 +10,12 @@ function Get-M365SourceInventory {
     $sites = @()
 
     if ($Config.Discovery.IncludeUsers -eq $true) {
-        $users = @(Get-MgUser -Top $Config.Discovery.MaxUsers -Property 'id,displayName,userPrincipalName,mail,accountEnabled,userType,assignedLicenses')
+        if ($null -ne $Config.Scope -and -not [string]::IsNullOrWhiteSpace($Config.Scope.UserMigrationGroupId)) {
+            $users = @(Get-M365MigrationGroupUsers -GroupId $Config.Scope.UserMigrationGroupId -MaxUsers $Config.Discovery.MaxUsers)
+        }
+        else {
+            $users = @(Get-MgUser -Top $Config.Discovery.MaxUsers -Property 'id,displayName,userPrincipalName,mail,accountEnabled,userType,assignedLicenses')
+        }
     }
 
     if ($Config.Discovery.IncludeGroups -eq $true) {
@@ -27,6 +32,26 @@ function Get-M365SourceInventory {
         Users = $users
         Groups = $groups
         Sites = $sites
+    }
+}
+
+function Get-M365MigrationGroupUsers {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $GroupId,
+
+        [int] $MaxUsers = 250
+    )
+
+    $members = @(Get-MgGroupMember -GroupId $GroupId -Top $MaxUsers)
+
+    foreach ($member in $members) {
+        if ($member.AdditionalProperties.'@odata.type' -ne '#microsoft.graph.user') {
+            continue
+        }
+
+        Get-MgUser -UserId $member.Id -Property 'id,displayName,userPrincipalName,mail,accountEnabled,userType,assignedLicenses'
     }
 }
 

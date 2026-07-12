@@ -9,15 +9,21 @@
   },
   "Discovery": {
     "IncludeUsers": true,
-    "IncludeGroups": true,
-    "IncludeSites": true,
+    "IncludeGroups": false,
+    "IncludeSites": false,
     "MaxUsers": 250,
     "MaxGroups": 250,
     "MaxSites": 250
   },
+  "Scope": {
+    "UserMigrationGroupId": "source-migration-security-group-object-id",
+    "TeamsCsvPath": ".\\config\\sample.teams-scope.csv",
+    "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv"
+  },
   "Provisioning": {
     "CreateUsers": false,
     "CreateGroups": true,
+    "CreateSecurityGroups": true,
     "CreateTeams": false,
     "CreateSharePointSites": false,
     "PreProvisionOneDrive": false,
@@ -26,10 +32,10 @@
   "Mappings": {
     "UserPrincipalNameDomain": "target.contoso.com",
     "GroupPrefix": "MIG-",
+    "SecurityGroupPrefix": "SG-MIG-",
     "LicenseSkuMap": {
       "SPE_E3": "target-sku-guid-here",
       "SPE_E5": "target-sku-guid-here"
     }
   }
 }
-

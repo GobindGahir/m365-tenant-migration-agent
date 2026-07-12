@@ -4,11 +4,17 @@
 
 The MVP generates a migration plan for users, licenses, OneDrive, Microsoft 365 groups, Teams, and SharePoint sites.
 
-Only Microsoft 365 group creation has a supported write path in version `0.1.0`, and only when:
+Microsoft 365 group and security group creation have supported write paths in version `0.1.0`, and only when:
 
 - `-Execute` is used
 - `Provisioning.CreateGroups` is `true`
 - the planned action is `CreateMicrosoft365Group`
+- an existing group with the target display name is not found
+
+Security group creation also requires:
+
+- `Provisioning.CreateSecurityGroups` is `true`
+- the planned action is `CreateSecurityGroup`
 - an existing group with the target display name is not found
 
 ## Plan-Only Actions
@@ -33,4 +39,3 @@ This keeps the first version safe while documenting the full orchestration model
 - SharePoint site template mapping
 - Teams owner/member provisioning
 - Rollback and cleanup report
-

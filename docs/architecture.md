@@ -4,8 +4,10 @@
 
 ```mermaid
 flowchart LR
-    Config["Agent config"] --> Source["Source tenant discovery"]
-    Source --> Inventory["Inventory model"]
+    Config["Agent config"] --> Source["Source tenant user group discovery"]
+    Config --> Scope["Teams/SPO CSV scope"]
+    Source --> Inventory["Scoped user inventory"]
+    Scope --> Plan
     Inventory --> Plan["Migration plan engine"]
     Plan --> DryRun["Dry-run reports"]
     Plan --> Execute{"-Execute?"}
@@ -23,4 +25,3 @@ flowchart LR
 - Idempotency checks before supported writes.
 - Reports are generated for review and approval.
 - Data migration is intentionally out of scope.
-

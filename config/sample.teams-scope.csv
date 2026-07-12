@@ -1,0 +1,4 @@
+SourceTeamName,TargetTeamName,TargetMailNickname,Action,Wave,Enabled,CreateSecurityGroup,TargetSecurityGroupName,Channels
+HR Team,MIG-HR Team,mig-hr-team,Provision,Wave1,true,true,SG-MIG-HR-Team,"General;Announcements;Migration"
+Finance Ops,MIG-Finance Ops,mig-finance-ops,Provision,Wave1,true,true,SG-MIG-Finance-Ops,"General;Payroll;Controls"
+Legacy Project,Legacy Project,legacy-project,Skip,Wave1,false,false,,"General"
