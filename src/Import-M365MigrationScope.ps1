@@ -8,6 +8,7 @@ function Import-M365MigrationScope {
     $teams = @()
     $sharePointSites = @()
     $distributionLists = @()
+    $sharedMailboxPermissions = @()
 
     if ($null -ne $Config.Scope -and -not [string]::IsNullOrWhiteSpace($Config.Scope.TeamsCsvPath)) {
         $teamsPath = Resolve-M365AgentPath -Path $Config.Scope.TeamsCsvPath
@@ -30,10 +31,18 @@ function Import-M365MigrationScope {
         }
     }
 
+    if ($null -ne $Config.Scope -and -not [string]::IsNullOrWhiteSpace($Config.Scope.SharedMailboxPermissionsCsvPath)) {
+        $sharedMailboxPermissionsPath = Resolve-M365AgentPath -Path $Config.Scope.SharedMailboxPermissionsCsvPath
+        if (Test-Path -Path $sharedMailboxPermissionsPath) {
+            $sharedMailboxPermissions = @(Import-Csv -Path $sharedMailboxPermissionsPath | Where-Object { ConvertTo-Bool $_.Enabled })
+        }
+    }
+
     [pscustomobject]@{
         Teams = $teams
         SharePointSites = $sharePointSites
         DistributionLists = $distributionLists
+        SharedMailboxPermissions = $sharedMailboxPermissions
     }
 }
 

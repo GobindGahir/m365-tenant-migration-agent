@@ -6,6 +6,7 @@ function Get-M365SourceInventory {
     )
 
     $users = @()
+    $sharedMailboxes = @()
     $groups = @()
     $sites = @()
 
@@ -16,6 +17,10 @@ function Get-M365SourceInventory {
         else {
             $users = @(Get-MgUser -Top $Config.Discovery.MaxUsers -Property 'id,displayName,userPrincipalName,mail,accountEnabled,userType,assignedLicenses')
         }
+    }
+
+    if ($null -ne $Config.Scope -and -not [string]::IsNullOrWhiteSpace($Config.Scope.SharedMailboxMigrationGroupId)) {
+        $sharedMailboxes = @(Get-M365MigrationGroupUsers -GroupId $Config.Scope.SharedMailboxMigrationGroupId -MaxUsers $Config.Discovery.MaxUsers)
     }
 
     if ($Config.Discovery.IncludeGroups -eq $true) {
@@ -30,6 +35,7 @@ function Get-M365SourceInventory {
         GeneratedAt = (Get-Date).ToString('s')
         SourceTenant = $Config.SourceTenant.TenantId
         Users = $users
+        SharedMailboxes = $sharedMailboxes
         Groups = $groups
         Sites = $sites
     }
@@ -54,4 +60,3 @@ function Get-M365MigrationGroupUsers {
         Get-MgUser -UserId $member.Id -Property 'id,displayName,userPrincipalName,mail,accountEnabled,userType,assignedLicenses'
     }
 }
-

@@ -93,6 +93,45 @@ function Invoke-M365TargetProvisioning {
                 }
             }
         }
+        elseif ($Execute -and $action.ExecuteSupported -eq $true -and $action.ActionType -eq 'CreateSharedMailbox' -and $Config.Provisioning.CreateSharedMailboxes -eq $true) {
+            if (-not (Get-Command New-Mailbox -ErrorAction SilentlyContinue)) {
+                $status = 'NotConnected'
+                $message = 'Exchange Online PowerShell is not connected or New-Mailbox is unavailable.'
+            }
+            else {
+                $existingMailbox = @(Get-EXOMailbox -Identity $action.TargetName -ErrorAction SilentlyContinue)
+
+                if ($existingMailbox.Count -gt 0) {
+                    $status = 'Skipped'
+                    $message = 'Target shared mailbox already exists.'
+                }
+                else {
+                    New-Mailbox -Shared -Name $action.TargetName -DisplayName $action.DisplayName -Alias $action.Alias -PrimarySmtpAddress $action.TargetName | Out-Null
+                    $status = 'Created'
+                    $message = 'Shared mailbox created in target tenant.'
+                }
+            }
+        }
+        elseif ($Execute -and $action.ExecuteSupported -eq $true -and $action.ActionType -eq 'ApplySharedMailboxPermission' -and $Config.Provisioning.ApplySharedMailboxPermissions -eq $true) {
+            if (-not (Get-Command Add-MailboxPermission -ErrorAction SilentlyContinue)) {
+                $status = 'NotConnected'
+                $message = 'Exchange Online PowerShell is not connected or mailbox permission cmdlets are unavailable.'
+            }
+            elseif ($action.PermissionType -eq 'FullAccess') {
+                Add-MailboxPermission -Identity $action.TargetName -User $action.Trustee -AccessRights FullAccess -InheritanceType All -AutoMapping:$false | Out-Null
+                $status = 'Applied'
+                $message = 'FullAccess permission applied.'
+            }
+            elseif ($action.PermissionType -eq 'SendAs') {
+                Add-RecipientPermission -Identity $action.TargetName -Trustee $action.Trustee -AccessRights SendAs -Confirm:$false | Out-Null
+                $status = 'Applied'
+                $message = 'SendAs permission applied.'
+            }
+            else {
+                $status = 'NotSupported'
+                $message = "Permission type '$($action.PermissionType)' is not supported in the MVP."
+            }
+        }
         elseif ($Execute -and $action.ExecuteSupported -ne $true) {
             $status = 'NotSupported'
             $message = 'This action is intentionally plan-only in the MVP.'

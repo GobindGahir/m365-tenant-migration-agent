@@ -27,6 +27,7 @@ function Export-M365MigrationAgentReport {
         GeneratedAt = (Get-Date).ToString('s')
         InventorySummary = @{
             Users = $Inventory.Users.Count
+            SharedMailboxes = $Inventory.SharedMailboxes.Count
             Groups = $Inventory.Groups.Count
             Sites = $Inventory.Sites.Count
         }
@@ -76,6 +77,7 @@ th { background: #f3f6fa; }
 <p>Generated: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')</p>
 <section class="summary">
 <div class="metric"><strong>$($Inventory.Users.Count)</strong>Users</div>
+<div class="metric"><strong>$($Inventory.SharedMailboxes.Count)</strong>Shared Mailboxes</div>
 <div class="metric"><strong>$($Inventory.Groups.Count)</strong>Groups</div>
 <div class="metric"><strong>$($Inventory.Sites.Count)</strong>Sites</div>
 <div class="metric"><strong>$($Plan.Actions.Count)</strong>Actions</div>
@@ -89,4 +91,3 @@ th { background: #f3f6fa; }
 </html>
 "@
 }
-

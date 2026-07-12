@@ -9,6 +9,7 @@ This project reads objects from a source tenant, builds a migration provisioning
 - Connects to source tenant with read-only Graph permissions
 - Connects to target tenant with read/write Graph permissions
 - Discovers source users from a source migration security group
+- Discovers source shared mailboxes from a separate source migration security group
 - Imports Teams and SharePoint migration scope from CSV files
 - Imports distribution list migration scope from CSV files
 - Builds a target provisioning plan
@@ -120,6 +121,8 @@ The agent should not provision everything it discovers.
 | Workload | Scope Source |
 | --- | --- |
 | Users | Source tenant migration security group |
+| Shared mailboxes | Separate source tenant migration security group |
+| Shared mailbox permissions | `config/sample.shared-mailbox-permissions.csv` |
 | OneDrive | Derived from scoped users |
 | Teams | `config/sample.teams-scope.csv` |
 | SharePoint | `config/sample.sharepoint-scope.csv` |
@@ -131,12 +134,16 @@ Example user scope:
 ```json
 "Scope": {
   "UserMigrationGroupId": "source-security-group-object-id",
+  "SharedMailboxMigrationGroupId": "source-shared-mailbox-security-group-object-id",
   "TeamsCsvPath": ".\\config\\sample.teams-scope.csv",
   "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv",
-  "DistributionListsCsvPath": ".\\config\\sample.distribution-lists-scope.csv"
+  "DistributionListsCsvPath": ".\\config\\sample.distribution-lists-scope.csv",
+  "SharedMailboxPermissionsCsvPath": ".\\config\\sample.shared-mailbox-permissions.csv"
 }
 ```
 
 For Teams and SharePoint, the CSV can request an associated target security group using `CreateSecurityGroup=true`.
 
 Distribution list creation uses Exchange Online PowerShell, so connect Exchange Online in the target tenant before running with `-Execute` when DL creation is enabled.
+
+Shared mailbox creation and shared mailbox permissions also use Exchange Online PowerShell in the target tenant.

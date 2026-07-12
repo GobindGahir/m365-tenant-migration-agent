@@ -64,6 +64,26 @@ function New-M365MigrationPlan {
         }
     }
 
+    foreach ($sharedMailbox in $Inventory.SharedMailboxes) {
+        $targetAddress = ConvertTo-TargetUpn -UserPrincipalName $sharedMailbox.UserPrincipalName -TargetDomain $Config.Mappings.UserPrincipalNameDomain
+
+        $actions.Add([pscustomobject]@{
+            ActionId = [guid]::NewGuid().ToString()
+            Workload = 'Exchange Online'
+            ActionType = 'CreateSharedMailbox'
+            SourceObjectId = $sharedMailbox.Id
+            SourceName = $sharedMailbox.UserPrincipalName
+            TargetName = $targetAddress
+            TargetObjectType = 'SharedMailbox'
+            RiskLevel = 'Medium'
+            ExecuteSupported = $true
+            Alias = ($targetAddress -split '@')[0]
+            DisplayName = $sharedMailbox.DisplayName
+            Wave = 'SharedMailboxScope'
+            Recommendation = 'Create target shared mailbox before applying permissions and migrating data.'
+        })
+    }
+
     foreach ($team in $Scope.Teams) {
         if ($team.Action -eq 'Skip') {
             continue
@@ -196,6 +216,28 @@ function New-M365MigrationPlan {
                 Recommendation = 'Validate target distribution list membership after creation.'
             })
         }
+    }
+
+    foreach ($permission in $Scope.SharedMailboxPermissions) {
+        if ($permission.Action -eq 'Skip') {
+            continue
+        }
+
+        $actions.Add([pscustomobject]@{
+            ActionId = [guid]::NewGuid().ToString()
+            Workload = 'Exchange Online'
+            ActionType = 'ApplySharedMailboxPermission'
+            SourceObjectId = $null
+            SourceName = $permission.SourceMailbox
+            TargetName = $permission.TargetMailbox
+            TargetObjectType = 'SharedMailboxPermission'
+            RiskLevel = 'High'
+            ExecuteSupported = $true
+            PermissionType = $permission.PermissionType
+            Trustee = $permission.Trustee
+            Wave = $permission.Wave
+            Recommendation = 'Apply shared mailbox delegation in target tenant after mailbox creation.'
+        })
     }
 
     [pscustomobject]@{

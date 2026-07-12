@@ -32,6 +32,8 @@ Suggested role:
 | --- | --- |
 | Exchange Administrator | Create and manage distribution groups during migration provisioning. |
 
+The same Exchange role is required to create target shared mailboxes and apply FullAccess or SendAs permissions.
+
 Before using `-Execute` for DL creation, connect to the target tenant with:
 
 ```powershell

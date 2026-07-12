@@ -17,12 +17,16 @@
   },
   "Scope": {
     "UserMigrationGroupId": "source-migration-security-group-object-id",
+    "SharedMailboxMigrationGroupId": "source-shared-mailbox-migration-security-group-object-id",
     "TeamsCsvPath": ".\\config\\sample.teams-scope.csv",
     "SharePointCsvPath": ".\\config\\sample.sharepoint-scope.csv",
-    "DistributionListsCsvPath": ".\\config\\sample.distribution-lists-scope.csv"
+    "DistributionListsCsvPath": ".\\config\\sample.distribution-lists-scope.csv",
+    "SharedMailboxPermissionsCsvPath": ".\\config\\sample.shared-mailbox-permissions.csv"
   },
   "Provisioning": {
     "CreateUsers": false,
+    "CreateSharedMailboxes": true,
+    "ApplySharedMailboxPermissions": true,
     "CreateGroups": true,
     "CreateSecurityGroups": true,
     "CreateDistributionLists": true,

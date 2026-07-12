@@ -1,0 +1,4 @@
+SourceMailbox,TargetMailbox,PermissionType,Trustee,Action,Wave,Enabled
+sales@source.contoso.com,sales@target.contoso.com,FullAccess,jane.doe@target.contoso.com,Provision,Wave1,true
+sales@source.contoso.com,sales@target.contoso.com,SendAs,jane.doe@target.contoso.com,Provision,Wave1,true
+hr-shared@source.contoso.com,hr-shared@target.contoso.com,FullAccess,hr.manager@target.contoso.com,Provision,Wave1,true

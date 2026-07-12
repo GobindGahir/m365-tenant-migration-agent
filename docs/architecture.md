@@ -4,9 +4,9 @@
 
 ```mermaid
 flowchart LR
-    Config["Agent config"] --> Source["Source tenant user group discovery"]
-    Config --> Scope["Teams/SPO/DL CSV scope"]
-    Source --> Inventory["Scoped user inventory"]
+    Config["Agent config"] --> Source["Source tenant user/shared mailbox group discovery"]
+    Config --> Scope["Teams/SPO/DL/shared mailbox permission CSV scope"]
+    Source --> Inventory["Scoped user and shared mailbox inventory"]
     Scope --> Plan
     Inventory --> Plan["Migration plan engine"]
     Plan --> DryRun["Dry-run reports"]

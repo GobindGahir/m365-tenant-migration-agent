@@ -4,7 +4,7 @@
 
 The MVP generates a migration plan for users, licenses, OneDrive, Microsoft 365 groups, Teams, and SharePoint sites.
 
-Microsoft 365 group, security group, and distribution list creation have supported write paths in version `0.1.0`.
+Microsoft 365 group, security group, distribution list, shared mailbox, and shared mailbox permission actions have supported write paths in version `0.1.0`.
 
 - `-Execute` is used
 - `Provisioning.CreateGroups` is `true`
@@ -23,6 +23,13 @@ Distribution list creation requires:
 - the planned action is `CreateDistributionList`
 - Exchange Online PowerShell is connected in the target tenant
 - an existing distribution list with the target SMTP address is not found
+
+Shared mailbox creation and permission assignment require:
+
+- `Provisioning.CreateSharedMailboxes` is `true`
+- `Provisioning.ApplySharedMailboxPermissions` is `true`
+- Exchange Online PowerShell is connected in the target tenant
+- target shared mailbox exists before permissions are applied
 
 ## Plan-Only Actions
 
