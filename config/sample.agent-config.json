@@ -1,0 +1,35 @@
+{
+  "SourceTenant": {
+    "TenantId": "source-tenant-id-or-domain",
+    "PrimaryDomain": "source.contoso.com"
+  },
+  "TargetTenant": {
+    "TenantId": "target-tenant-id-or-domain",
+    "PrimaryDomain": "target.contoso.com"
+  },
+  "Discovery": {
+    "IncludeUsers": true,
+    "IncludeGroups": true,
+    "IncludeSites": true,
+    "MaxUsers": 250,
+    "MaxGroups": 250,
+    "MaxSites": 250
+  },
+  "Provisioning": {
+    "CreateUsers": false,
+    "CreateGroups": true,
+    "CreateTeams": false,
+    "CreateSharePointSites": false,
+    "PreProvisionOneDrive": false,
+    "AssignLicenses": false
+  },
+  "Mappings": {
+    "UserPrincipalNameDomain": "target.contoso.com",
+    "GroupPrefix": "MIG-",
+    "LicenseSkuMap": {
+      "SPE_E3": "target-sku-guid-here",
+      "SPE_E5": "target-sku-guid-here"
+    }
+  }
+}
+

@@ -1,0 +1,15 @@
+config/agent-config.json
+reports/*.csv
+reports/*.json
+reports/*.jsonl
+reports/*.html
+logs/
+*.log
+.env
+*.secret
+*.key
+*.pfx
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

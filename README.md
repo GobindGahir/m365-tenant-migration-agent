@@ -1,2 +1,112 @@
-# m365-tenant-migration-agent
-Microsoft 365 tenant-to-tenant migration provisioning agent that reads source tenant objects and provisions users, licenses, Teams, SharePoint sites, OneDrive, and groups in the target tenant.
+# M365 Tenant Migration Agent
+
+PowerShell-based Microsoft 365 tenant-to-tenant provisioning agent.
+
+This project reads objects from a source tenant, builds a migration provisioning plan, and prepares target tenant actions for users, licenses, Microsoft 365 groups, Teams, SharePoint sites, and OneDrive. The first release is safe by default: it runs in dry-run mode unless `-Execute` is explicitly provided.
+
+## What This Agent Does
+
+- Connects to source tenant with read-only Graph permissions
+- Connects to target tenant with read/write Graph permissions
+- Discovers source users, groups, Teams-connected groups, and SharePoint sites
+- Builds a target provisioning plan
+- Detects naming and mapping risks
+- Exports CSV, JSON, and HTML reports
+- Writes an audit log for every planned or executed action
+- Supports `-WhatIf`-style dry-run behavior by default
+- Provides safe extension points for real provisioning
+
+## What This Agent Does Not Do
+
+This project does not migrate mailbox contents, Teams messages, SharePoint files, or OneDrive files. Data movement should be handled by a migration platform. This agent focuses on target-side preparation and provisioning orchestration.
+
+## Requirements
+
+- Windows PowerShell 5.1 or PowerShell 7+
+- Microsoft Graph PowerShell SDK
+- Source tenant app/user permissions for read-only discovery
+- Target tenant app/user permissions for provisioning
+
+Install Microsoft Graph PowerShell SDK:
+
+```powershell
+Install-Module Microsoft.Graph -Scope CurrentUser
+```
+
+## Quick Start
+
+Copy the sample config:
+
+```powershell
+Copy-Item .\config\sample.agent-config.json .\config\agent-config.json
+```
+
+Edit tenant IDs, domains, and license mappings, then run:
+
+```powershell
+.\scripts\Invoke-M365TenantMigrationAgent.ps1 `
+  -ConfigPath ".\config\agent-config.json" `
+  -OutputPath ".\reports"
+```
+
+The default run is a dry run.
+
+To execute supported target actions:
+
+```powershell
+.\scripts\Invoke-M365TenantMigrationAgent.ps1 `
+  -ConfigPath ".\config\agent-config.json" `
+  -OutputPath ".\reports" `
+  -Execute
+```
+
+## MVP Provisioning Support
+
+| Workload | MVP Behavior |
+| --- | --- |
+| Users | Generates target user provisioning plan and license assignment plan. |
+| Licenses | Maps source SKU part numbers to target SKU IDs from config. |
+| Microsoft 365 Groups | Generates group creation plan; supports safe creation when `-Execute` is used. |
+| Teams | Detects Teams-connected groups and generates team/channel provisioning actions. |
+| SharePoint | Generates site provisioning plan. |
+| OneDrive | Generates pre-provisioning actions for licensed users. |
+
+## Safety Controls
+
+- Dry-run mode by default
+- Explicit `-Execute` required for writes
+- Separate source and target tenant IDs
+- Config-driven domain and license mappings
+- Audit log for each action
+- Idempotency checks before supported writes
+- No secrets committed to repository
+
+## Project Structure
+
+```text
+m365-tenant-migration-agent/
+  M365TenantMigrationAgent.psd1
+  M365TenantMigrationAgent.psm1
+  scripts/
+    Invoke-M365TenantMigrationAgent.ps1
+  src/
+    Connect-M365TenantMigrationAgent.ps1
+    Get-M365SourceInventory.ps1
+    New-M365MigrationPlan.ps1
+    Invoke-M365TargetProvisioning.ps1
+    Export-M365MigrationAgentReport.ps1
+    Write-M365AgentAudit.ps1
+  config/
+    sample.agent-config.json
+  docs/
+    permissions.md
+    architecture.md
+    provisioning-model.md
+  reports/
+    .gitkeep
+```
+
+## Disclaimer
+
+Tenant migration automation is high-impact. Test in lab tenants before using this project with production tenants.
+
