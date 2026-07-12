@@ -2,7 +2,7 @@
 
 ## Source Tenant
 
-Suggested delegated Microsoft Graph scopes:
+Suggested Microsoft Graph application permissions for app-only discovery:
 
 | Scope | Purpose |
 | --- | --- |
@@ -13,7 +13,7 @@ Suggested delegated Microsoft Graph scopes:
 
 ## Target Tenant
 
-Suggested delegated Microsoft Graph scopes:
+Suggested Microsoft Graph application permissions for app-only provisioning:
 
 | Scope | Purpose |
 | --- | --- |
@@ -38,6 +38,23 @@ Before using `-Execute` for DL creation, connect to the target tenant with:
 
 ```powershell
 Connect-ExchangeOnline -UserPrincipalName admin@target.contoso.com
+```
+
+For app-only Exchange Online auth, use config:
+
+```json
+"Target": {
+  "ClientId": "target-app-client-id",
+  "CertificateThumbprint": "target-certificate-thumbprint",
+  "ExchangeOrganization": "targettenant.onmicrosoft.com",
+  "ConnectExchangeOnline": true
+}
+```
+
+The agent will call:
+
+```powershell
+Connect-ExchangeOnline -AppId "<client-id>" -CertificateThumbprint "<thumbprint>" -Organization "<tenant>.onmicrosoft.com"
 ```
 
 ## Security Notes

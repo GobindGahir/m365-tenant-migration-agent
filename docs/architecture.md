@@ -4,6 +4,8 @@
 
 ```mermaid
 flowchart LR
+    Auth["App registrations / certificate auth"] --> Source
+    Auth --> Target
     Config["Agent config"] --> Source["Source tenant user/shared mailbox group discovery"]
     Config --> Scope["Teams/SPO/DL/shared mailbox permission CSV scope"]
     Source --> Inventory["Scoped user and shared mailbox inventory"]

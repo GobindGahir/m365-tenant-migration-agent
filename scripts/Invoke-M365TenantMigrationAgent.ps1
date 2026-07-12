@@ -20,13 +20,13 @@ if (-not (Test-Path -Path $ConfigPath)) {
 
 $config = Get-Content -Path $ConfigPath -Raw | ConvertFrom-Json
 
-Connect-M365TenantMigrationAgent -TenantId $config.SourceTenant.TenantId -Mode Source
+Connect-M365TenantMigrationAgent -Config $config -Mode Source
 $inventory = Get-M365SourceInventory -Config $config
 $scope = Import-M365MigrationScope -Config $config
 
 $plan = New-M365MigrationPlan -Inventory $inventory -Config $config -Scope $scope
 
-Connect-M365TenantMigrationAgent -TenantId $config.TargetTenant.TenantId -Mode Target
+Connect-M365TenantMigrationAgent -Config $config -Mode Target
 $results = Invoke-M365TargetProvisioning -Plan $plan -Config $config -OutputPath $OutputPath -Execute:$Execute
 
 Export-M365MigrationAgentReport -Inventory $inventory -Plan $plan -Results $results -OutputPath $OutputPath

@@ -8,6 +8,7 @@ This project reads objects from a source tenant, builds a migration provisioning
 
 - Connects to source tenant with read-only Graph permissions
 - Connects to target tenant with read/write Graph permissions
+- Supports delegated auth and app-only certificate authentication
 - Discovers source users from a source migration security group
 - Discovers source shared mailboxes from a separate source migration security group
 - Imports Teams and SharePoint migration scope from CSV files
@@ -54,6 +55,26 @@ Edit tenant IDs, domains, and license mappings, then run:
 
 The default run is a dry run.
 
+The sample config uses app-only authentication:
+
+```json
+"Auth": {
+  "Mode": "AppOnly",
+  "Source": {
+    "ClientId": "source-app-client-id",
+    "CertificateThumbprint": "source-certificate-thumbprint"
+  },
+  "Target": {
+    "ClientId": "target-app-client-id",
+    "CertificateThumbprint": "target-certificate-thumbprint",
+    "ExchangeOrganization": "targettenant.onmicrosoft.com",
+    "ConnectExchangeOnline": false
+  }
+}
+```
+
+Set `ConnectExchangeOnline` to `true` when executing distribution list or shared mailbox actions through Exchange Online PowerShell.
+
 To execute supported target actions:
 
 ```powershell
@@ -83,6 +104,7 @@ To execute supported target actions:
 - Dry-run mode by default
 - Explicit `-Execute` required for writes
 - Separate source and target tenant IDs
+- App-only certificate authentication support
 - Config-driven domain and license mappings
 - Audit log for each action
 - Idempotency checks before supported writes
@@ -113,6 +135,7 @@ m365-tenant-migration-agent/
   docs/
     permissions.md
     architecture.md
+    deployment.md
     provisioning-model.md
   reports/
     .gitkeep

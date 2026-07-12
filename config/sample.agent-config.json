@@ -1,4 +1,17 @@
 {
+  "Auth": {
+    "Mode": "AppOnly",
+    "Source": {
+      "ClientId": "source-app-client-id",
+      "CertificateThumbprint": "source-certificate-thumbprint"
+    },
+    "Target": {
+      "ClientId": "target-app-client-id",
+      "CertificateThumbprint": "target-certificate-thumbprint",
+      "ExchangeOrganization": "targettenant.onmicrosoft.com",
+      "ConnectExchangeOnline": false
+    }
+  },
   "SourceTenant": {
     "TenantId": "source-tenant-id-or-domain",
     "PrimaryDomain": "source.contoso.com"
